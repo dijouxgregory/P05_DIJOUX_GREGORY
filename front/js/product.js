@@ -112,12 +112,11 @@ let colorSelected =  document.getElementById('colors')
         itemSelected['quantity']= quantity.value;  
      //console.log(itemSelected)
      //Generate a dynamic localStorage key
-     let key =productInfo._id;
-     if (key != productInfo._id){
-
-     }
-     localStorage.setItem(`key="${productInfo._id}"`,JSON.stringify(itemSelected))
-       
+     
+     
+     localStorage.setItem(`${productInfo._id}`,JSON.stringify(itemSelected))
+     //`key="${productInfo._id}"` 
+     
 
     })
 
