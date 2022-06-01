@@ -116,7 +116,7 @@ let colorSelected =  document.getElementById('colors')
      
      localStorage.setItem(`${productInfo._id}`,JSON.stringify(itemSelected))
      //`key="${productInfo._id}"` 
-     
+     window.location =  "cart.html"
 
     })
 
