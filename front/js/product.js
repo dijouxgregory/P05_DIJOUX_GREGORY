@@ -1,128 +1,72 @@
+async function displayProduct() {
+    //Récupérer l'id du produit depuis l'URL via UrlSearchParams
+    const getIdFromUrl = window.location.search;
+    console.log(getIdFromUrl);
+    const urlSearchParams = new URLSearchParams(getIdFromUrl);
+    id = urlSearchParams.get("id");
 
-// Run fetch() on console to verify API interaction
-const getProducts = async function (){
-    try{
-        let res = await fetch('http://localhost:3000/api/products/415b7cacb65d43b2b5c1ff70f3393ad1')
-        if (res.ok){
-            let data = await res.json()
-            console.log (data) 
-        }else {
-            console.error('Server return :', res.status)
-        }
-    } catch (e) {
-        console.log(e)
+    //Récupérer les données de l'api.
+    const response = await fetch("http://localhost:3000/api/products/" + id);
+    const productData = await response.json();
+    console.log(productData);
+
+    //Affichage de l'image du produit
+    const item__img = document.querySelector(".item__img");
+    const image = document.createElement("img");
+    image.src = productData.imageUrl;
+    image.alt = productData.altTxt;
+    item__img.appendChild(image);
+
+    //Affichage du titre du produit
+    const title = document.getElementById("title");
+    title.innerHTML = productData.name;
+
+    //Affichage du prix du produit
+    const price = document.getElementById("price");
+    price.innerHTML = productData.price;
+
+    //Affichage de la description du produit
+    const description = document.getElementById("description");
+    description.innerHTML = productData.description;
+
+    //Affichage des options de couleurs
+    productData.colors.forEach((color) => {
+        //console.log(color);
+        const colors = document.getElementById("colors");
+        const option = document.createElement("option");
+        option.value = color;
+        option.innerHTML = color;
+        colors.appendChild(option);
+    });
+
+    //Fonction d'ajout au panier.
+    function addToCart() {
+        const addButton = document.getElementById("addToCart");
+        const quantity = document.getElementById("quantity");
+        const storage = [];
+
+        addButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (colors.value !== "" && quantity !== 0 /*&& quantity <= 100*/) {
+                const object = {};
+                object["_id"] = productData._id;
+                object["color"] = colors.value;
+                object["quantity"] = quantity.value;
+
+                storage.push(object);
+
+                localStorage.setItem("cart", JSON.stringify(storage));
+                console.log(storage);
+
+                /*Redirection vers panier.
+                window.location = "cart.html";
+                */
+            } else {
+                window.location = "./product.html?id=" + productData._id;
+            }
+            //console.log(dataToStore);
+        });
     }
-} 
-
-getProducts()
-
-// Get product id to insert on url and get dynamique redirection
-const urlProduct = window.location.search.split('?').join("");
-//console.log(urlProduct)
-
-
-
-// Single-product page layout base code
-async function getSingleProduct () {
-     let res = await fetch(`http://localhost:3000/api/products/${urlProduct}`);
-     let productInfo = await res.json();
-     console.log(productInfo)
-     //Get product name on title balises
-     document.querySelector('title')
-     .innerText = `${productInfo.name}?${productInfo._id}`
-     //Get product image
-     document.querySelector('.item__img')
-     .innerHTML = `<img src="${productInfo.imageUrl }" alt="${productInfo.altTxt}"/>`
-     //Get product name
-     document.getElementById('title')
-     .innerText = `${productInfo.name}`
-     //Get product price
-     document.getElementById('price')
-     .innerText = `${productInfo.price}`
-     //Get product description
-     document.getElementById('description')
-     .innerText = `${productInfo.description}`
-     //Get all product variation 
-     productInfo.colors.map((color) =>{
-         //console.log(color)
-         document.getElementById('colors')
-         .insertAdjacentHTML ('beforeend', `<option value="${color}">${color}</option>`)     
-     })
-     addToCart(productInfo)
-            
-     //``
-        
+    addToCart();
 }
-getSingleProduct()
-
-
-let colorSelected =  document.getElementById('colors')
-    .addEventListener('change', () => {
-        console.log (colors.value)
-        //return colors.value
-    });
-    let inputedNumber = document.getElementById('quantity')
-    .addEventListener ('change', () => {  
-        console.log (quantity.value) 
-        //return quantity.value
-    });
-
-
-
-
-    
-
-// add to card function
- async function addToCart () {
-    let res = await fetch(`http://localhost:3000/api/products/${urlProduct}`);
-    let productInfo = await res.json();
-    //console.log(productInfo)
-    //export for save the selection
-    document.getElementById('addToCart')
-    .addEventListener ("click", () =>{
-        //e.preventDefault()
-            //Get the selected color
-    document.getElementById('colors')
-    .addEventListener('change', () => {
-        //console.log (colors.value)
-        
-    });
-    document.getElementById('quantity')
-    .addEventListener ('change', () => {  
-        //console.log (quantity.value) 
-        
-    });
-    //Stock on localStorage the cart on array
-    /*let itemSelected =[
-        productInfo._id, 
-        productInfo.name,
-        productInfo.price,
-        productInfo.description,
-        colors.value,
-        quantity.value
-        ]*/
-        let itemSelected ={};
-        itemSelected['img']= productInfo.imageUrl; 
-        itemSelected['alt']= productInfo.altTxt;
-        itemSelected['_id']= productInfo._id;  
-        itemSelected['name']= productInfo.name;
-        itemSelected['price']= productInfo.price;
-        itemSelected['description']= productInfo.description;
-        itemSelected['color']= colors.value;
-        itemSelected['quantity']= quantity.value;  
-     //console.log(itemSelected)
-     //Generate a dynamic localStorage key
-     
-     
-     localStorage.setItem(`${productInfo._id}`,JSON.stringify(itemSelected))
-     //`key="${productInfo._id}"` 
-     window.location =  "cart.html"
-
-    })
-
- }
- 
-
-
-
-
+displayProduct();

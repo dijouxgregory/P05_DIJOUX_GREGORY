@@ -62,12 +62,7 @@ async function localStorageDataDisplay (){
     deleteItem[i].addEventListener('click', deleteItemfromcart)
 
   }
-  
-
-  
-
-
-    
+     
     //console.log(element)
  
     
